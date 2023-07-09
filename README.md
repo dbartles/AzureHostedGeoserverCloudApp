@@ -1,12 +1,12 @@
 # Building a cloud native open source enterprise web GIS
-## Full Stack configuration of an open layers based public web map hosted on a geoserver VM in Microsoft Azure Cloud
+## Full Stack configuration of an open layers based public web map hosted on a Linux VM running cloud native geoserver in Microsoft Azure Cloud
 
 Introduction: This is a guide for users wishing to deploy their own web app on Azure. This is not an official guide and is just my personal install notes that may help others. All of the software in this tutorial is free and open source, but hosting on Azure is not free and will require a paid subscription. The cost for the database, server, and public IP addresses could be around 50$ monthly if you dont shut down the server when not in use. Note that Azure does provide $200 trial credits to new users that you are likely able to take advantage of. 
 
  Of course you can deploy this application on other cloud platforms (AWS, Linode, GCS), but this guide will show you the particulars of deploying on Azure. 
 
 Background:
-You will learn how to spin up your own PostgreSQL database application, a Ubuntu Server machine that connects to the database and hosts your layers, and an OpenLayers web app front end to access the maps. Direct connections to the database by the administrator can be made through the QGIS desktop application for data editing. 
+You will learn how to spin up your own PostgreSQL database application, a Linux Debian Server machine that hosts a containerized version of Geoserver that connects to the database and hosts your layers, and an OpenLayers web app front end to access the maps. Direct connections to the database by the administrator can be made through the QGIS desktop application for data editing. 
 
 NOTE: This guide is for the dockerized cloud native version of Geoserver, NOT the traditional monolithic servlet application version.  If you are unsure about which type you want to deploy, first do some initial research into what Docker and microservices vs monolithic applications are. You may also want to start with a standard Geoserver deployment to keep things simple. 
 
@@ -434,9 +434,16 @@ Now you have to copy your code from the dist folder to your web server. You can 
 scp -r /home/user/dist azureuser@13.64.141.70:~/
 ```
 
-Note: I had trouble doing this with scp due to public key permissions, so as a work around I uploaded my code to github and made it public and then pulled it down from github in the terminal on my azure machine using:
+Note: If you have trouble doing this with scp due to public key permissions, a work around is to upload the code to github and make it public and then pull it down from github in the terminal on your azure machine using:
 
 ```
 git clone github.com/username/myapp.git
 ```
+
+## 11 Set up your server machine to server the web content
+
+N
+
+
+## 12 Configure network security rules
 
