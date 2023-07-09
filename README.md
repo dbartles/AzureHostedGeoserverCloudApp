@@ -1,20 +1,20 @@
 # Building a cloud native open source enterprise web GIS
 ## Full Stack configuration of an open layers based public web map hosted on a Linux VM running cloud native geoserver in Microsoft Azure Cloud
 
-Introduction: This is a guide for users wishing to deploy their own web app on Azure. This is not an official guide and is just my personal install notes that may help others. All of the software in this tutorial is free and open source, but hosting on Azure is not free and will require a paid subscription. The cost for the database, server, and public IP addresses could be around 50$ monthly if you dont shut down the server when not in use. Note that Azure does provide $200 trial credits to new users that you are likely able to take advantage of. 
+Introduction: This is a guide for users wishing to deploy their own open source enterprise web GIS system with a web front end hosted in the public cloud (Azure). This is not an official guide and is just my personal install notes that may help others. All of the software in this tutorial is free and open source, but hosting on Azure is not free and will require a paid subscription. The cost for the database, server, and public IP addresses could be around 50-100$ monthly if you dont shut down the server when not in use. Note that Azure does provide $200 trial credits to new users that you are likely able to take advantage of. 
 
- Of course you can deploy this application on other cloud platforms (AWS, Linode, GCS), but this guide will show you the particulars of deploying on Azure. 
+ Of course you can deploy this application on other cloud platforms (AWS, Linode, Google Cloud Services), but this guide will show you the particulars of deploying on Azure. 
 
 Background:
-You will learn how to spin up your own PostgreSQL database application, a Linux Debian Server machine that hosts a containerized version of Geoserver that connects to the database and hosts your layers, and an OpenLayers web app front end to access the maps. Direct connections to the database by the administrator can be made through the QGIS desktop application for data editing. 
+You will learn how to spin up your own PostgreSQL database application and configure it with the PostGIS extension and upload GIS layers to it. You will also deploy a Linux Debian Server machine that hosts a containerized version of Geoserver that connects to the database and hosts your layers as Web Map Services (WMS) and Web Feature Services (WFS), and OpenLayers will be the front end web app that provides public access the maps through a browser. Direct connections to the database by the administrator can be made through the QGIS desktop application for data editing. 
 
-NOTE: This guide is for the dockerized cloud native version of Geoserver, NOT the traditional monolithic servlet application version.  If you are unsure about which type you want to deploy, first do some initial research into what Docker and microservices vs monolithic applications are. You may also want to start with a standard Geoserver deployment to keep things simple. 
+NOTE: This guide is for the containerized [cloud native version of Geoserver](http://geoserver.org/geoserver-cloud/), NOT the traditional monolithic servlet application version.  If you are unsure about which type you want to deploy, first do some initial research into what Docker and microservices vs monolithic applications are. You may also want to start with a standard Geoserver deployment to keep things simple. 
 
 This guide will demonstrate a simple deployment with one web server machine configured with a Postgresql/PostGIS database on the same server. This will be designed for relatively low web traffic scenarios with a goal of keeping setup easy and costs low. Depending on your use case, scaling this solution may be necessary. 
 
 ## Recommended Skills/Knowledge before you try this:
 
-Below are the basic skills recommended to try this. You do not need more than a basic understanding of each of these concepts, but if you are completely unfamiliar with any of the terms below take some time to research them so you don't get completely lost in this tutorial. I recommend taking the Azure Fundamentals course and playing around with deploying a few Linux based web servers first before starting this excercize. 
+Below are the basic skills recommended to try this. You do not need more than a basic understanding of each of these concepts, but if you are completely unfamiliar with any of the terms below take some time to research them so you don't get completely lost in this tutorial. I recommend taking the courses that prepare you for the [Azure Fundamentals AZ-900 exam](https://learn.microsoft.com/en-us/certifications/exams/az-900/) and playing around with deploying a few Linux based web servers first before starting this excercize. 
 
 * HTML/javascript/css for basic front-end web coding
 * Cloud Services 
@@ -26,7 +26,7 @@ Below are the basic skills recommended to try this. You do not need more than a 
 * QGIS Desktop Application (making maps and connecting to databases)
 * Web mapping services 
 * Basic Bash shell commands (exploring files and folders through the terminal)
-* IDE's like Visual Studio Code
+* IDE's (e.g. Visual Studio Code)
 
 
 
@@ -425,13 +425,42 @@ Through the terminal within your project folder (probably within VS Code) you wi
 npm run build
 ```
 
+## 10 Set up your server machine to server the web content
 
-## 10 Deploy the web app on a web server
+To serve web pages we will use nginx. On your Azure Debian linux machine install nginx
+
+```
+sudo apt install nginx
+```
+
+To test to ensure that nginx is installed and running, see if your access this URL it will bring back a page:
+
+```
+curl localhost:80
+```
+
+Nginx serves up the index.html file in /var/www/html/ by default. This can be changed in the server settings. In this example we will place our dist folder at this location and delete the default nginx page.
+
+
+## 11 Deploy the web app on a web server
+
+Now make a folder to store your web page on the azure server. You will make it in the root directory:
+
+```
+cd /
+sudo mkdir data
+cd data
+sudo mkdir www
+cd www
+```
+
+No
+
 
 Now you have to copy your code from the dist folder to your web server. You can accomplish this using scp. From a terminal on your local machine run this to copy the dist directory to your cloud server through ssh. 
 
 ```
-scp -r /home/user/dist azureuser@13.64.141.70:~/
+scp -r /home/user/dist azureuser@13.64.141.70:/data/www
 ```
 
 Note: If you have trouble doing this with scp due to public key permissions, a work around is to upload the code to github and make it public and then pull it down from github in the terminal on your azure machine using:
@@ -439,11 +468,34 @@ Note: If you have trouble doing this with scp due to public key permissions, a w
 ```
 git clone github.com/username/myapp.git
 ```
+You should now have your index.html and the assets folder under /data/www on your Azure machine. 
 
-## 11 Set up your server machine to server the web content
+Now you have to configure the nginx configuration file to read those files. 
 
-N
+```
+sudo nano /etc/nginx/nginx.conf
+```
 
+At the bottom of the config file paste this:
+
+```
+http {
+    server {
+        location / {
+                root /data/www;
+        }
+    }
+}
+```
+
+*** The code at this point is still running the default server. I ran this and unlinked the default but now nothing is loading. Need to fix and set up default web page that is loaded into /data/www
+
+```
+cd /etc/nginx/sites-enabled
+sudo unlink default
+sudo service nginx restart
+```
 
 ## 12 Configure network security rules
 
+In this final section you will expose your web map to the public internet (if desired). 
