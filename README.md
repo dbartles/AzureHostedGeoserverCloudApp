@@ -279,7 +279,7 @@ Go into the azure portal and find your virtual machine. Click Networking and the
 
 Add port 9090 as the destination port from any port in your IP address. 
 
-![Architecture](/images/NetworkSecurityRules.png)
+![Architecture](/images/NetworkSecurityRule.png)
 
 Now copy the public IP address of the linux server and paste it into a web browser. Add :9090 to the end of the address and press enter.  You should now be accessing the spring eureka system status page that is being hosted by your VM!
 
