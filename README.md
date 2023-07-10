@@ -80,7 +80,7 @@ I recommend getting the Azure fundamentals certification (or just reviewing the 
 Configure a map with the data you'd like to see on it in QGIS. Note that any points, lines, polygons you want to show on the map may need to be transferred later on to the PostGresSQL database that we will deploy in future steps. You can either download someone elses data, or create your own datasets in a local database or shapefile to start. 
 
 
-# #2 Set up a virtual machine in Azure
+# 2 Set up a virtual machine in Azure
 
 Note: Virtual machines, storage, and IP addresses will be billed per hour. It is advised that you review the costs involved, and use best management practices (shutting down the VM when not in use) to minimize your monthly Azure bill. Even with the VM shut down you will be billed for the public IP address and storage volumes associated with this project. If you are eligible, sign up for a free trial of Azure do complete this project at no cost.  
 
@@ -104,7 +104,7 @@ When prompted to download the private key go ahead and download it and create th
 
 Now find the virtual machine in your Azure Portal and start the machine if it is not already running.
 
-# #3 SSH into your VM
+# 3 SSH into your VM
 
 Now that your server VM is created and running you will want to use SSH to connect into the server so you can work from inside the machine. 
 
@@ -119,21 +119,29 @@ Then, in the Azure Portal webpage for the VM click "Connect" and click on the "S
 cd .ssh
 ````
 
-You can type "ls" to verify that your file is indeed in this folder. 
+
+You can type 
+```
+ls
+```
+
+ to verify that your file is indeed in this folder. 
 
 Then make sure the private key is readonly by entering:
 ```
 chmod 400 <yourkeyname>.pem
 ```
 
-Now type in the private key path in step 3 in the Azure Portal web browser window. Azure will print out code in step 4 that will allow you to connect to your server using the private key. Copy and paste that code into the command line. You should get a message saying the authenticity of the host cannot be established. Type "yes" to go ahead and continue connecting. 
+Now type in the private key path in step 3 in the Azure Portal web browser window. Azure will print out code in step 4 that will allow you to connect to your server using the private key. Copy and paste that code into the command line terminal on your computer. You should get a message saying the authenticity of the host cannot be established. Type "yes" to go ahead and continue connecting. 
 
 If you were successfull you will see the server information, and your command prompt will be prefaced with your username on the server @ the server name. You can now enter commands within the server. 
 
+HINT: You will probably be occasionally disconnecting and shutting down your server during the course of this project. In most terminals if you return to the terminal and press the up arrow it will remember the last ssh connection command you made so you will not always have to return to Azure portla to get the connection command.
 
-# #4 Set up the VM with the required software
 
-Before you deploy your docker containers with geoserver you will need to install the necessary components on the machine. Start by updating the packages (always good practice when working in Linux):
+# 4 Set up the VM with the required software
+
+Before you deploy your docker containers with geoserver you will need to install the necessary components on the server. Start by updating the packages (always good practice before installing software on Linux):
 
 ```
 sudo apt update
@@ -259,11 +267,16 @@ sudo docker-compose --compatibility up -d
 This section follows the actions documented here: http://geoserver.org/geoserver-cloud/
 
 
-Give the services a bit of time to start. You can run the following process status command to check on them. Over time they should change status from Up "unhealthy" to Up "healthy. Continue to run the command until all of the services are healthy. 
+Give the services a bit of time to start. You can run the following process status command to check on them. Over time they should change status from Up "unhealthy" to Up "healthy. Continue to run the command until all of the services are Up and healthy under the STATUS column. 
 
 ```
 sudo docker-compose ps
 ```
+The output will look something like this if things are up and running.
+
+![Docker Compose PS](/images/dockercompose_ps.png)
+
+
 
 Geoserver should now be running! If you did this on your local computer you should be able to access the services via a webbrowser, but since there is a firewall blocking the ports on the azure VM you cant quite access it from your external computer. 
 
@@ -273,9 +286,9 @@ Run this command to fetch the web page from the local host. This should print ou
 curl localhost:9090
 ```
 
-# #6 Change Firewall Settings to allow browser access from your computer to the GeoServer web interface. 
+# #6 Change Firewall Settings to allow browser access from your local computer to the GeoServer web admin interface. 
 
-Go into the azure portal and find your virtual machine. Click Networking and then "Add Inbound Port Rule".
+Go into the Azure Portal and find your virtual machine. Click Networking and then "Add Inbound Port Rule".
 
 Add port 9090 as the destination port from any port in your IP address. 
 
@@ -425,6 +438,8 @@ Through the terminal within your project folder (probably within VS Code) you wi
 npm run build
 ```
 
+
+
 ## 10 Set up your server machine to server the web content
 
 To serve web pages we will use nginx. On your Azure Debian linux machine install nginx
@@ -439,7 +454,7 @@ To test to ensure that nginx is installed and running, see if your access this U
 curl localhost:80
 ```
 
-Nginx serves up the index.html file in /var/www/html/ by default. This can be changed in the server settings. In this example we will place our dist folder at this location and delete the default nginx page.
+Nginx serves up the `index.html` file in `/var/www/html/` by default. This can be changed in the server settings. In this example we will place our dist folder at this location and delete the default nginx page.
 
 
 ## 11 Deploy the web app on a web server
@@ -472,7 +487,7 @@ You should now have your index.html and the assets folder under /data/www on you
 
 Now you have to configure the nginx configuration file to read those files. You can now go and change the settings of the sites-enabled and the sites-available files are in this config file if you'd like.
 
-Note that etc/nginx/sites-available/default is meant to be a larger collection of all draft sites and possible options, and etc/nginx/sites-enabled/default is only the sites you have enabled.
+Note that `etc/nginx/sites-available/default` is meant to be a larger collection of all draft sites and possible options, and `etc/nginx/sites-enabled/default` is only the sites you have enabled.
 
 To edit the sites-enabled folder, open up the configuration file:
 
