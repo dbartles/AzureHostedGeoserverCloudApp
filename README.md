@@ -5,7 +5,6 @@ Introduction: This is a guide for users wishing to deploy their own open source 
 
  Of course you can deploy this application on other cloud platforms (AWS, Linode, Google Cloud Services), but this guide will show you the particulars of deploying on Azure. 
 
-Background:
 You will learn how to spin up your own PostgreSQL database application and configure it with the PostGIS extension and upload GIS layers to it. You will also deploy a Linux Debian Server machine that hosts a containerized version of Geoserver that connects to the database and hosts your layers as Web Map Services (WMS) and Web Feature Services (WFS), and OpenLayers will be the front end web app that provides public access the maps through a browser. Direct connections to the database by the administrator can be made through the QGIS desktop application for data editing. 
 
 NOTE: This guide is for the containerized [cloud native version of Geoserver](http://geoserver.org/geoserver-cloud/), NOT the traditional monolithic servlet application version.  If you are unsure about which type you want to deploy, first do some initial research into what Docker and microservices vs monolithic applications are. You may also want to start with a standard Geoserver deployment to keep things simple. 
@@ -53,7 +52,7 @@ There are also many non-open source options for hosting and displaying GIS data 
 
 This project wil use a single Debian server machine hosted in the Azure cloud to host the web map, database, and web server. The database will be a PostGRESQL 
 
- There are many possible ways to configure the architecture of this web mapping service, but this will be a good starting point. 
+ There are many possible ways to configure the architecture of this web mapping service, but this will be a good starting point that will show you what is possible. 
 
 Presumably you would be able to replicate this deployment on a local server or another cloud platform, but these directions will be specific to Microsoft Azure. 
 
@@ -61,7 +60,9 @@ Note: Cloud hosting fees will apply to the Azure  portion of this project, even 
 
 To manage costs ensure that you have your Debian linux server machine configured to auto-shut down every night. Also set up budgets and budget alerts so you know when you are projected to spend more than you want to. Hint: dont set your budget alerts too low, otherwise you will mentally ignore all the emails about your project being over budget and not see when the costs get seriously out of hand. 
 
-![Architecture](/images/ProjectDiagram_geoserver.drawio.png)
+See below for what the final architecture will look like:
+
+![Architecture](/images/ProjectDiagram_geoserver_cloudnative.drawio.png)
 
 
 # Prerequisite
@@ -71,7 +72,7 @@ Sign up for an Azure account and initialize a subscription: https://azure.micros
 I recommend getting the Azure fundamentals certification (or just reviewing the course material) before starting this tutorial if you are unfamiliar with cloud computing platforms: https://learn.microsoft.com/en-us/certifications/azure-fundamentals/
 
 
-#
+
 
 # 1. Prepare your QGIS project on your local machine
 
@@ -80,7 +81,7 @@ I recommend getting the Azure fundamentals certification (or just reviewing the 
 Configure a map with the data you'd like to see on it in QGIS. Note that any points, lines, polygons you want to show on the map may need to be transferred later on to the PostGresSQL database that we will deploy in future steps. You can either download someone elses data, or create your own datasets in a local database or shapefile to start. 
 
 
-# 2 Set up a virtual machine in Azure
+# 2. Set up a virtual machine in Azure
 
 Note: Virtual machines, storage, and IP addresses will be billed per hour. It is advised that you review the costs involved, and use best management practices (shutting down the VM when not in use) to minimize your monthly Azure bill. Even with the VM shut down you will be billed for the public IP address and storage volumes associated with this project. If you are eligible, sign up for a free trial of Azure do complete this project at no cost.  
 
@@ -104,7 +105,7 @@ When prompted to download the private key go ahead and download it and create th
 
 Now find the virtual machine in your Azure Portal and start the machine if it is not already running.
 
-# 3 SSH into your VM
+# 3. SSH into your VM
 
 Now that your server VM is created and running you will want to use SSH to connect into the server so you can work from inside the machine. 
 
@@ -139,7 +140,7 @@ If you were successfull you will see the server information, and your command pr
 HINT: You will probably be occasionally disconnecting and shutting down your server during the course of this project. In most terminals if you return to the terminal and press the up arrow it will remember the last ssh connection command you made so you will not always have to return to Azure portla to get the connection command.
 
 
-# 4 Set up the VM with the required software
+# 4. Set up the VM with the required software
 
 Before you deploy your docker containers with geoserver you will need to install the necessary components on the server. Start by updating the packages (always good practice before installing software on Linux):
 
@@ -227,7 +228,7 @@ sudo docker-compose --version
 ```
 
 
-# #5 Download the Docker-Compose file and start up geoserver containers
+# 5. Download the Docker-Compose file and start up geoserver containers
 
 The next steps follow these directions: http://geoserver.org/geoserver-cloud/
 
@@ -286,7 +287,7 @@ Run this command to fetch the web page from the local host. This should print ou
 curl localhost:9090
 ```
 
-# #6 Change Firewall Settings to allow browser access from your local computer to the GeoServer web admin interface. 
+# 6. Change Firewall Settings to allow browser access from your local computer to the GeoServer web admin interface. 
 
 Go into the Azure Portal and find your virtual machine. Click Networking and then "Add Inbound Port Rule".
 
@@ -301,7 +302,7 @@ If you are familiar with a typical Geoserver application the app should now look
 At the moment we do not have our GIS data hosted anywhere so now we will set up the database and come back to Geoserver in a bit. 
 
 
-# # 6 Configure a PostgreSQL database and PostGIS to host your data
+# 7. Configure a PostgreSQL database and PostGIS to host your data
 
 In this step you will configure a PostgreSQL database with the PostGIS extension to serve as your project database.
 
@@ -327,7 +328,7 @@ CREATE EXTENSION postgres;
 You now have the postgres extension installed on the database. 
 
 
-# #7 Configure your GIS data in the database via QGIS
+# 8. Configure your GIS data in the database via QGIS
 
 
 Now we will switch back to our local machine to set up the data from our desktop GIS software (QGIS). If you don't already have QGIS installed, Windows, Linux, and Mac versions can be downloaded for free. Alternatively you can also connect to the database through ArcGIS if you prefer, but the directions below are for QGIS. 
@@ -374,7 +375,7 @@ Once your store is added, navigate to Layers. Add a new layer from the store you
 You should now be able to click "Layer Preview" to generate images of your layers! 
 
 
-# # 9 Build the web frontend for your map
+# 9. Build the web frontend for your map
 
 We will now navigate to Open Layers to build our web front end of the map. You can build the page on your local machine to make things more simple and deploy to the production server once you have happy with it. 
 
@@ -440,7 +441,7 @@ npm run build
 
 
 
-## 10 Set up your server machine to server the web content
+# 11. Set up your server machine to server the web content
 
 To serve web pages we will use nginx. On your Azure Debian linux machine install nginx
 
@@ -457,7 +458,7 @@ curl localhost:80
 Nginx serves up the `index.html` file in `/var/www/html/` by default. This can be changed in the server settings. In this example we will place our dist folder at this location and delete the default nginx page.
 
 
-## 11 Deploy the web app on a web server
+# 12. Deploy the web app on a web server
 
 Now make a folder to store your web page on the azure server. You will make it in the root directory:
 
@@ -520,7 +521,7 @@ curl localhost:80
 ```
 
 
-## 12 Configure network security rules
+# 13. Configure network security rules
 
 In this final section you will expose your web map to the public internet or particular IP addresses you wish to allow to view the data. 
 
