@@ -470,32 +470,63 @@ git clone github.com/username/myapp.git
 ```
 You should now have your index.html and the assets folder under /data/www on your Azure machine. 
 
-Now you have to configure the nginx configuration file to read those files. 
+Now you have to configure the nginx configuration file to read those files. You can now go and change the settings of the sites-enabled and the sites-available files are in this config file if you'd like.
+
+Note that etc/nginx/sites-available/default is meant to be a larger collection of all draft sites and possible options, and etc/nginx/sites-enabled/default is only the sites you have enabled.
+
+To edit the sites-enabled folder, open up the configuration file:
 
 ```
-sudo nano /etc/nginx/nginx.conf
+sudo nano /etc/nginx/sites-enabled/default
 ```
 
-At the bottom of the config file paste this:
+In the config file make sure that this line (line 41) is reading your root web directory:
 
 ```
-http {
-    server {
-        location / {
-                root /data/www;
-        }
-    }
-}
+root /data/www;
 ```
-
-*** The code at this point is still running the default server. I ran this and unlinked the default but now nothing is loading. Need to fix and set up default web page that is loaded into /data/www
+Then below that on line 44 just have it read your index.html file (or replace that with whatever your home page file name if yours is different)
 
 ```
-cd /etc/nginx/sites-enabled
-sudo unlink default
-sudo service nginx restart
+index index.html;
 ```
+
+Save and exit your changes to that file. Now restart nginx to make sure your changes take effect.
+
+
+```
+sudo systemctl restart nginx
+```
+
+Finally check to see if your map page is now accessible from the local machine on port 80. You should see your html from your map setup here if sucessful
+
+```
+curl localhost:80
+```
+
 
 ## 12 Configure network security rules
 
-In this final section you will expose your web map to the public internet (if desired). 
+In this final section you will expose your web map to the public internet or particular IP addresses you wish to allow to view the data. 
+
+Go into the Azure Portal and configure a new networking port rule. Either add any source IP or your IP to be able to access destination port 80. 
+
+You should now be able to go into your browser on your local computer and copy the Linux VM IP address and paste it into your browser with ":80" to the end of it. 
+
+If everything is working you should now see your map with the data! If you cant see your map layers but can see the rest of the map, make sure your docker containers are started and healthy with:
+
+```
+sudo docker-compose ps
+```
+
+My map looks like this when I load it:
+
+![Architecture](/images/FinalMap.png)
+
+**Congratulations!** That brings us to the end of this lesson. You now have seen under the hood of the full stack of open source technologies and tied them all together to create a functional web mapping service and all underlying components. 
+
+There is much more to do if you are building a full robust enterprise system, like improve the web page, assign your custom domain name, tweak security settings and passwords, etc, but you now have learned how to build the full stack of technology that can enable enterprise grade mapping.
+
+I hope to explore some additional functionalities in future projects. For example, like how to build a [GeoNode](https://geonode.org/) site to manage your web GIS content, or how to collect data through mobile applications using [QField](https://qfield.org)
+
+-Devin Bartley
