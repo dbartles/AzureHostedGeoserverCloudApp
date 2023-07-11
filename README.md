@@ -1,15 +1,17 @@
 # How to build a cloud native open source enterprise web GIS
 ## A full stack configuration of an open layers based public web map hosted on a Linux VM running cloud native geoserver in Microsoft Azure Cloud
 
-Introduction: This is a guide for users wishing to deploy their own open source enterprise web GIS system with a web front end hosted in the public cloud (Azure). This is not an official guide and is just my personal install notes that may help others. All of the software in this tutorial is free and open source, but hosting on Azure is not free and will require a paid subscription. The cost for the database, server, and public IP addresses could be around 50-100$ monthly if you dont shut down the server when not in use. Note that Azure does provide $200 trial credits to new users that you are likely able to take advantage of. 
-
- Of course you can deploy this application on other cloud platforms (AWS, Linode, Google Cloud Services), but this guide will show you the particulars of deploying on Azure. 
+This is a guide for users wishing to deploy their own open source enterprise web GIS system with a web front end hosted in the public cloud (Azure). This is not an official guide and is just my personal install notes that may help others. All of the software in this tutorial is free and open source, but hosting on Azure is not free and will require a paid subscription. The cost for the database, server, and public IP addresses could be around 50-100$ monthly if you dont shut down the server when not in use. Note that Azure does provide $200 trial credits to new users that you are likely able to take advantage of. Of course you can deploy this application on other cloud platforms (AWS, Linode, Google Cloud Services), but this guide will show you the particulars of deploying on Azure. 
 
 You will learn how to spin up your own PostgreSQL database application and configure it with the PostGIS extension and upload GIS layers to it. You will also deploy a Linux Debian Server machine that hosts a containerized version of Geoserver that connects to the database and hosts your layers as Web Map Services (WMS) and Web Feature Services (WFS), and OpenLayers will be the front end web app that provides public access the maps through a browser. Direct connections to the database by the administrator can be made through the QGIS desktop application for data editing. 
 
 NOTE: This guide is for the containerized [cloud native version of Geoserver](http://geoserver.org/geoserver-cloud/), NOT the traditional monolithic servlet application version.  If you are unsure about which type you want to deploy, first do some initial research into what Docker and microservices vs monolithic applications are. You may also want to start with a standard Geoserver deployment to keep things simple. 
 
 This guide will demonstrate a simple deployment with one web server machine configured with a Postgresql/PostGIS database on the same server. This will be designed for relatively low web traffic scenarios with a goal of keeping setup easy and costs low. Depending on your use case, scaling this solution may be necessary. 
+
+<br>
+<br>
+
 
 ## Recommended Skills/Knowledge before you try this:
 
@@ -27,18 +29,18 @@ Below are the basic skills recommended to try this. You do not need more than a 
 * Basic Bash shell commands (exploring files and folders through the terminal)
 * IDE's (e.g. Visual Studio Code)
 
-
+<br>
+<br>
 
 # What if I get stuck?
 
 You will inevitably run into undocumented errors or issues in a project like this that are not covered in this or other tutorials. You will need to rely on your basic understanding of these technologies simple problem solving to get you out of a bind. I recommend having a Chat GPT session open to ask  questions. Alternatively you can do web searches for any errors or commands you dont understand. Likely other users have encountered simular issues. 
 
-
+<br>
 
 ## I dont have the time or skills for this. Is there an easier/quicker way to do something simular?
 
-
-Yes. If you want to go open source for hosting a web application, private companies can set this all up for you and maintain your servers at a cost. One example is https://lunageo.com/servers/  . 
+Yes. If you want to go open source for hosting a web application, private companies can set this all up for you and zmaintain your servers at a cost. One example is https://lunageo.com/servers/  . 
 
 Another simular application is QGIS Cloud. You can sign up for a free trial or pro subscription to https://qgiscloud.com/ and push your QGIS project directly to the cloud without having to configure all of the project elements and servers in the backend. QGIS. 
 
@@ -46,8 +48,8 @@ There are also many non-open source options for hosting and displaying GIS data 
 
  Note: I am not affliated with Luna, QGIS Cloud, ArcGIS Online, or Google Maps in any way. These are just examples and is not a comprehensive list. 
 
-
-
+<br>
+<br>
 ## Proposed Architecture:
 
 This project wil use a single Debian server machine hosted in the Azure cloud to host the web map, database, and web server. The database will be a PostGRESQL 
@@ -63,22 +65,27 @@ To manage costs ensure that you have your Debian linux server machine configured
 See below for what the final architecture will look like:
 
 ![Architecture](/images/ProjectDiagram_geoserver_cloudnative.drawio.png)
+<br>
+<br>
 
-
-# Prerequisite
+# Prerequisites
 
 Sign up for an Azure account and initialize a subscription: https://azure.microsoft.com/en-ca/free/  You will need to be able to enter a credit card to pay for hosted services. Note that the costs involved in this deployment are relatively small, but wise choices will need to be made as far as what types of machines to deploy and if they will be running constantly or only when you need them.
 
 I recommend getting the Azure fundamentals certification (or just reviewing the course material) before starting this tutorial if you are unfamiliar with cloud computing platforms: https://learn.microsoft.com/en-us/certifications/azure-fundamentals/
 
 
-
+<br>
+<br>
 
 # 1. Prepare your QGIS project on your local machine
 
 * Download QGIS desktop if you do not already have it installed: https://www.qgis.org/en/site/forusers/download.html
 
 Configure a map with the data you'd like to see on it in QGIS. Note that any points, lines, polygons you want to show on the map may need to be transferred later on to the PostGresSQL database that we will deploy in future steps. You can either download someone elses data, or create your own datasets in a local database or shapefile to start. 
+
+<br>
+<br>
 
 
 # 2. Set up a virtual machine in Azure
@@ -104,6 +111,10 @@ Accept the rest of the defaults and validate and create the virtual machine.
 When prompted to download the private key go ahead and download it and create the resource. 
 
 Now find the virtual machine in your Azure Portal and start the machine if it is not already running.
+
+<br>
+<br>
+
 
 # 3. SSH into your VM
 
@@ -138,6 +149,8 @@ Now type in the private key path in step 3 in the Azure Portal web browser windo
 If you were successfull you will see the server information, and your command prompt will be prefaced with your username on the server @ the server name. You can now enter commands within the server. 
 
 HINT: You will probably be occasionally disconnecting and shutting down your server during the course of this project. In most terminals if you return to the terminal and press the up arrow it will remember the last ssh connection command you made so you will not always have to return to Azure portla to get the connection command.
+<br>
+<br>
 
 
 # 4. Set up the VM with the required software
@@ -226,6 +239,8 @@ Now check the docker-compose version to make sure it installed:
 ```
 sudo docker-compose --version
 ```
+<br>
+<br>
 
 
 # 5. Download the Docker-Compose file and start up geoserver containers
@@ -261,7 +276,7 @@ Then use nano to edit the docker-compose.yml file to change the cups to 2.0 from
 ```
 sudo docker-compose --compatibility up -d
 ```
-
+<br>
 
 ## Tuning Your Microservices
 
@@ -286,6 +301,8 @@ Run this command to fetch the web page from the local host. This should print ou
 ```
 curl localhost:9090
 ```
+<br>
+<br>
 
 # 6. Change Firewall Settings to allow browser access from your local computer to the GeoServer web admin interface. 
 
@@ -300,6 +317,9 @@ Now copy the public IP address of the linux server and paste it into a web brows
 If you are familiar with a typical Geoserver application the app should now look the same as it does in a traditional deployment. 
 
 At the moment we do not have our GIS data hosted anywhere so now we will set up the database and come back to Geoserver in a bit. 
+
+<br>
+<br>
 
 
 # 7. Configure a PostgreSQL database and PostGIS to host your data
@@ -327,6 +347,9 @@ CREATE EXTENSION postgres;
 ```
 You now have the postgres extension installed on the database. 
 
+<br>
+<br>
+
 
 # 8. Configure your GIS data in the database via QGIS
 
@@ -344,8 +367,11 @@ Configure your project and make sure that the old local versions of the datasour
 Your data shuld now be available by connecting to your PostGIS database that is hosted in azure. Test this out in QGIS. 
 
 Finally, you must allow for your PostGreSQL database to allow connections from the IP address of your Linux VM that holds the docker containers. Go into your Azure Portal and navigate to your database, under Networking add a new firewall rule to allow connections from the IP address of your Linux VM. 
+<br>
+<br>
 
-# #8 Configure GeoServer to host Web Feature Services of your data
+
+# 9. Configure GeoServer to host Web Feature Services of your data
 
 Now we will set up geoserver to pull in the data in our PostGRESQL database and host our GIS data as a web feature service. A web feature service (WFS) is a standard layer format that will be consumable by a wide variety of web and desktop GIS applications. In this case we will consume it through an OpenLayers web front end, but people worldwide will be able to connect to the service once hosted in Geoserver. We will generally be following the documentation for using the GeoServer web administration interface at this site: https://docs.geoserver.org/latest/en/user/gettingstarted/web-admin-quickstart/index.html
 
@@ -373,9 +399,11 @@ Make sure the SSL mode is set to Enabled.
 Once your store is added, navigate to Layers. Add a new layer from the store you created. All of the available layers in the database should show up as options. Choose a layer and give it a description and title. Add the bounding boxes based on the data and save the layer. 
 
 You should now be able to click "Layer Preview" to generate images of your layers! 
+<br>
+<br>
 
 
-# 9. Build the web frontend for your map
+# 10. Build the web frontend for your map
 
 We will now navigate to Open Layers to build our web front end of the map. You can build the page on your local machine to make things more simple and deploy to the production server once you have happy with it. 
 
@@ -438,8 +466,8 @@ Through the terminal within your project folder (probably within VS Code) you wi
 ```
 npm run build
 ```
-
-
+<br>
+<br>
 
 # 11. Set up your server machine to server the web content
 
@@ -456,6 +484,8 @@ curl localhost:80
 ```
 
 Nginx serves up the `index.html` file in `/var/www/html/` by default. This can be changed in the server settings. In this example we will place our dist folder at this location and delete the default nginx page.
+<br>
+<br>
 
 
 # 12. Deploy the web app on a web server
@@ -469,9 +499,6 @@ cd data
 sudo mkdir www
 cd www
 ```
-
-No
-
 
 Now you have to copy your code from the dist folder to your web server. You can accomplish this using scp. From a terminal on your local machine run this to copy the dist directory to your cloud server through ssh. 
 
@@ -519,6 +546,8 @@ Finally check to see if your map page is now accessible from the local machine o
 ```
 curl localhost:80
 ```
+<br>
+<br>
 
 
 # 13. Configure network security rules
