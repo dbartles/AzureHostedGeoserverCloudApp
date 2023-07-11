@@ -3,7 +3,7 @@
 
 This is a guide for users wishing to deploy their own open source enterprise web GIS system with a web front end hosted in the public cloud (Azure). This is not an official guide and is just my personal install notes that may help others. All of the software in this tutorial is free and open source, but hosting on Azure is not free and will require a paid subscription. The cost for the database, server, and public IP addresses could be around 50-100$ monthly if you dont shut down the server when not in use. Note that Azure does provide $200 trial credits to new users that you are likely able to take advantage of. Of course you can deploy this application on other cloud platforms (AWS, Linode, Google Cloud Services), but this guide will show you the particulars of deploying on Azure. 
 
-You will learn how to spin up your own PostgreSQL database application and configure it with the PostGIS extension and upload GIS layers to it. You will also deploy a Linux Debian Server machine that hosts a containerized version of Geoserver that connects to the database and hosts your layers as Web Map Services (WMS) and Web Feature Services (WFS), and OpenLayers will be the front end web app that provides public access the maps through a browser. Direct connections to the database by the administrator can be made through the QGIS desktop application for data editing. 
+You will learn how to spin up your own PostgreSQL database application and configure it with the PostGIS extension and upload GIS layers to it. You will also deploy a Linux Debian Server machine that hosts a containerized version of Geoserver that connects to the database and hosts your layers as Web Map Services (WMS) and Web Feature Services (WFS), and [OpenLayers](https://openlayers.org)  will be the front end web app that provides public access the maps through a browser. Direct connections to the database by the administrator can be made through the QGIS desktop application for data editing. 
 
 NOTE: This guide is for the containerized [cloud native version of Geoserver](http://geoserver.org/geoserver-cloud/), NOT the traditional monolithic servlet application version.  If you are unsure about which type you want to deploy, first do some initial research into what Docker and microservices vs monolithic applications are. You may also want to start with a standard Geoserver deployment to keep things simple. 
 
@@ -50,6 +50,7 @@ There are also many non-open source options for hosting and displaying GIS data 
 
 <br>
 <br>
+
 ## Proposed Architecture:
 
 This project wil use a single Debian server machine hosted in the Azure cloud to host the web map, database, and web server. The database will be a PostGRESQL 
