@@ -7,7 +7,7 @@ You will learn how to spin up your own PostgreSQL database application and confi
 
 NOTE: This guide is for the containerized [cloud native version of Geoserver](http://geoserver.org/geoserver-cloud/), NOT the traditional monolithic servlet application version.  If you are unsure about which type you want to deploy, first do some initial research into what Docker and microservices vs monolithic applications are. You may also want to start with a standard Geoserver deployment to keep things simple. 
 
-This guide will demonstrate a simple deployment with one web server machine configured with a Postgresql/PostGIS database on the same server. This will be designed for relatively low web traffic scenarios with a goal of keeping setup easy and costs low. Depending on your use case, scaling this solution may be necessary. 
+This guide will demonstrate a simple deployment with one web server machine connected to an Azure Database for PostGRESQL Flexible Server . This will be designed for relatively low web traffic scenarios with a goal of keeping setup easy and costs low. Depending on your use case, scaling this solution may be necessary. 
 
 <br>
 <br>
@@ -15,7 +15,7 @@ This guide will demonstrate a simple deployment with one web server machine conf
 
 ## Recommended Skills/Knowledge before you try this:
 
-Below are the basic skills recommended to try this. You do not need more than a basic understanding of each of these concepts, but if you are completely unfamiliar with any of the terms below take some time to research them so you don't get completely lost in this tutorial. I recommend taking the courses that prepare you for the [Azure Fundamentals AZ-900 exam](https://learn.microsoft.com/en-us/certifications/exams/az-900/) and playing around with deploying a few Linux based web servers first before starting this excercize. 
+Below are the basic skills recommended to try this. You do not need more than a basic understanding of each of these concepts, but if you are completely unfamiliar with any of the terms below, take some time to research them so you don't get completely lost in this tutorial. I recommend taking courses that prepare you for the [Azure Fundamentals AZ-900 exam](https://learn.microsoft.com/en-us/certifications/exams/az-900/) and playing around with deploying a few Linux based web servers first before starting this excercize. 
 
 * HTML/javascript/css for basic front-end web coding
 * Cloud Services 
@@ -40,26 +40,26 @@ You will inevitably run into undocumented errors or issues in a project like thi
 
 ## I dont have the time or skills for this. Is there an easier/quicker way to do something simular?
 
-Yes. If you want to go open source for hosting a web application, private companies can set this all up for you and zmaintain your servers at a cost. One example is https://lunageo.com/servers/  . 
+Yes. If you want to go open source for hosting a web application, private companies can set this all up for you and maintain your servers at a cost. One example is https://lunageo.com/servers/  . 
 
 Another simular application is QGIS Cloud. You can sign up for a free trial or pro subscription to https://qgiscloud.com/ and push your QGIS project directly to the cloud without having to configure all of the project elements and servers in the backend. QGIS. 
 
-There are also many non-open source options for hosting and displaying GIS data online, such as ArcGIS Online, Google Maps, etc. 
+There are also many non-open source options for hosting and displaying GIS or spatial data online, such as ArcGIS Online, Google Maps, etc. 
 
- Note: I am not affliated with Luna, QGIS Cloud, ArcGIS Online, or Google Maps in any way. These are just examples and is not a comprehensive list. 
+Note: I am not affliated with Luna, QGIS Cloud, ArcGIS Online, or Google Maps in any way. These are just examples and is not a comprehensive list. 
 
 <br>
 <br>
 
 ## Proposed Architecture:
 
-This project wil use a single Debian server machine hosted in the Azure cloud to host the web map, database, and web server. The database will be a PostGRESQL 
+This project will use a single Debian server machine hosted in the Azure cloud to host the web map, database, and web server. The database will be a PostGRESQL 
 
  There are many possible ways to configure the architecture of this web mapping service, but this will be a good starting point that will show you what is possible. 
 
 Presumably you would be able to replicate this deployment on a local server or another cloud platform, but these directions will be specific to Microsoft Azure. 
 
-Note: Cloud hosting fees will apply to the Azure  portion of this project, even though all of the software involved is open source. If you shut down your server when not using it you could expect to spend about $5-20 per month while configuring this project.  If you intend to serve this project round the clock to the public the cost could be as much as $100 per month. 
+Note: Cloud hosting fees will apply to the Azure portion of this project, even though all of the software involved is open source. If you shut down your server when not using it you could expect to spend about $5-20 per month while configuring this project.  If you intend to serve this project round the clock to the public the cost could be as much as $100 per month. 
 
 To manage costs ensure that you have your Debian linux server machine configured to auto-shut down every night. Also set up budgets and budget alerts so you know when you are projected to spend more than you want to. Hint: dont set your budget alerts too low, otherwise you will mentally ignore all the emails about your project being over budget and not see when the costs get seriously out of hand. 
 
