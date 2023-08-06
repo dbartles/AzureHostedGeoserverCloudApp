@@ -1,4 +1,4 @@
-# How to build a cloud native open source enterprise web GIS
+# How to build an open-source web GIS system
 ## A full stack configuration of an open layers based public web map hosted on a Linux VM running cloud native geoserver in Microsoft Azure Cloud
 
 This is a guide for users wishing to deploy their own open source enterprise web GIS system with a web front end hosted in the public cloud (Azure). This is not an official guide and is just my personal install notes that may help others. All of the software in this tutorial is free and open source, but hosting on Azure is not free and will require a paid subscription. The cost for the database, server, and public IP addresses could be around 50-100$ monthly if you dont shut down the server when not in use. Note that Azure does provide $200 trial credits to new users that you are likely able to take advantage of. Of course you can deploy this application on other cloud platforms (AWS, Linode, Google Cloud Services), but this guide will show you the particulars of deploying on Azure. 
