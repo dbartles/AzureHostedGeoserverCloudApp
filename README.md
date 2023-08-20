@@ -53,11 +53,11 @@ Note: I am not affliated with Luna, QGIS Cloud, ArcGIS Online, or Google Maps in
 
 ## Proposed Architecture:
 
-This project will use a single Debian server machine hosted in the Azure cloud to host the web map, database, and web server. The database will be a PostGRESQL 
+This project will use a single Debian server machine hosted in the Azure cloud to host the web map, database, and web server. The database will be an Azure database for PostGRESQL flexible server, which is a serverless cloud hosted database. 
 
  There are many possible ways to configure the architecture of this web mapping service, but this will be a good starting point that will show you what is possible. 
 
-Presumably you would be able to replicate this deployment on a local server or another cloud platform, but these directions will be specific to Microsoft Azure. 
+Presumably you would be able to replicate a similar deployment on a local server or another cloud platform, but these directions will be specific to Microsoft Azure. 
 
 Note: Cloud hosting fees will apply to the Azure portion of this project, even though all of the software involved is open source. If you shut down your server when not using it you could expect to spend about $5-20 per month while configuring this project.  If you intend to serve this project round the clock to the public the cost could be as much as $100 per month. 
 
