@@ -119,7 +119,7 @@ Now find the virtual machine in your Azure Portal and start the machine if it is
 
 # 3. SSH into your VM
 
-Now that your server VM is created and running you will want to use SSH to connect into the server so you can work from inside the machine. 
+Now that your server VM is created and running you will want to use SSH to connect into the server so you can work from inside the machine. This will be command line based, rather than remoting into the desktop with a graphic interfact. A server machine without a graphic user interface is known as a "headless" server. 
 
 You will have downloaded the private key (file ending in .pem) from the last step. Copy and paste is from your downloads folder into
 ```
@@ -149,7 +149,7 @@ Now type in the private key path in step 3 in the Azure Portal web browser windo
 
 If you were successfull you will see the server information, and your command prompt will be prefaced with your username on the server @ the server name. You can now enter commands within the server. 
 
-HINT: You will probably be occasionally disconnecting and shutting down your server during the course of this project. In most terminals if you return to the terminal and press the up arrow it will remember the last ssh connection command you made so you will not always have to return to Azure portla to get the connection command.
+HINT: You will probably be occasionally disconnecting and shutting down your server during the course of this project. In most terminals if you return to the terminal and press the up arrow it will remember the last ssh connection command you made so you will not always have to return to Azure portal to get the connection command.
 <br>
 <br>
 
