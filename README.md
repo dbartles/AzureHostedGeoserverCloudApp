@@ -365,7 +365,7 @@ Use the DB manager to directly upload your project data into your postgresql ser
 
 Configure your project and make sure that the old local versions of the datasources are no longer added to the project and that the project layers are referencing the postgresql server database. 
 
-Your data shuld now be available by connecting to your PostGIS database that is hosted in azure. Test this out in QGIS. 
+Your data should now be available by connecting to your PostGIS database that is hosted in Azure. Test this out in QGIS. 
 
 Finally, you must allow for your PostGreSQL database to allow connections from the IP address of your Linux VM that holds the docker containers. Go into your Azure Portal and navigate to your database, under Networking add a new firewall rule to allow connections from the IP address of your Linux VM. 
 <br>
