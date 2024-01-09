@@ -163,11 +163,11 @@ sudo apt update
 ```
 
 
-Next you will download and install Java Development Kit 20 (JDK 20) and Apache Maven and update the path variable. Follow these directions: https://www.baeldung.com/install-maven-on-windows-linux-mac
+Next you will download and install Java Development Kit 21 (JDK 21) and Apache Maven and update the path variable. Follow these directions: https://www.baeldung.com/install-maven-on-windows-linux-mac
 
 First, Download the JDK
 ```
-wget https://download.oracle.com/java/20/latest/jdk-20_linux-x64_bin.tar.gz
+wget https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz
 ```
 
 Unzip the JDK tarball into folder of your choice (in this example I am using /Maven)
