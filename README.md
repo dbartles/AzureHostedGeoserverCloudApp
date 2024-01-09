@@ -173,18 +173,18 @@ wget https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz
 Unzip the JDK tarball into folder of your choice (in this example I am using /Maven)
 
 ```
-sudo tar -xf jdk-20_linux-x64_bin.tar.gz -C /Maven
+sudo tar -xf jdk-21_linux-x64_bin.tar.gz -C /Maven
 
 ```
 
 Now download apache maven
 ```
-wget https://dlcdn.apache.org/maven/maven-3/3.9.3/binaries/apache-maven-3.9.3-bin.tar.gz
+wget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
 ```
 
 Unzip apache maven into the /Maven folder
 ```
-sudo tar -xf apache-maven-3.9.3-bin.tar.gz -C /Maven
+sudo tar -xf apache-maven-3.9.6-bin.tar.gz -C /Maven
 ```
 
 Now you need to add Maven to the Environment Path. We do this from .bashrc which is a script file that runs when a user logs in. 
@@ -198,9 +198,9 @@ nano ~/.bashrc
 Then add this text to the file (you can put it at the bottom). Save the file and exit nano. 
 
 ```
-export M2_HOME=/Maven/apache-maven-3.9.3
+export M2_HOME=/Maven/apache-maven-3.9.6
 export M2=$M2_HOME/bin 
-export MAVEN_OPTS=-Xms256m -Mmx512m 
+export MAVEN_OPTS="-Xms256m -Xmx512m"
 export PATH=$M2:$PATH
 ```
 
